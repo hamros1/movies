@@ -1,0 +1,20 @@
+<div class="ui vertical segment">
+  <div class="ui five doubling stackable cards">
+    <% videos.each do |item| %>
+      <%= rendered "components/item" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="ui pagination menu">
+  <% if page > 1 %>
+    <a class="item" href="/search?q=<%= HTML.escape(query.not_nil!) %>&page=<%= page - 1 %>">
+      <%= t(locale, "Previous page") %>
+    </a>
+  <% end %>
+  <% if count >= 20 %>
+    <a class="item" href="/search?q=<%= HTML.escape(query.not_nil!) %>&page=<%= page + 1 %>">
+      <%= t(locale, "Next page") %>
+    </a>
+  <% end %>
+</div>

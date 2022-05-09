@@ -1,0 +1,42 @@
+version: 2.0
+shards:
+  backtracer:
+    git: https://github.com/sija/backtracer.cr.git
+    version: 1.2.1
+
+  db:
+    git: https://github.com/crystal-lang/crystal-db.git
+    version: 0.10.1
+
+  exception_page:
+    git: https://github.com/crystal-loot/exception_page.git
+    version: 0.2.0
+
+  kemal:
+    git: https://github.com/kemalcr/kemal.git
+    version: 1.1.0
+
+  kilt:
+    git: https://github.com/jeromegn/kilt.git
+    version: 0.6.1
+
+  matrix:
+    git: https://github.com/exilor/matrix.git
+    version: 0.1.0+git.commit.db74e62dcc0b65e548bf1a8eda65657310f57152
+
+  pg:
+    git: https://github.com/will/crystal-pg.git
+    version: 0.24.0
+
+  radix:
+    git: https://github.com/luislavena/radix.git
+    version: 0.4.1
+
+  stumpy_core:
+    git: https://github.com/stumpycr/stumpy_core.git
+    version: 1.9.1
+
+  stumpy_jpeg:
+    git: https://github.com/stumpycr/stumpy_jpeg.git
+    version: 0.1.0+git.commit.714ad6c1f905cb503c53843cda8285f52592e2c2
+

@@ -1,0 +1,92 @@
+<% masthead = video %>
+<div class="ui inverted vertical masthead segment">
+  <% img = tv.backdrops.try &.[0] %>
+  <% color = get_avg_color(img) %>
+  <div class="Poster_Base" style="background-color: <%= color %>;position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+  </div>
+
+  <div class="Poster_Art" style="position: absolute;top: 0;right: 0;bottom: 0;left: 0;opacity: 0.8;top: 0;right: 0;bottom: 0;left: 0;opacity: 0.8;background: url(/images<%= img %>); background-size: cover; image-rendering: optimizequality;"></div>
+
+  <div class="Poster_Gradient" style="background-image: linear-gradient(245deg, <%= color %>00 35%, <%= color %> 70%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+  </div>
+
+  <div class="Poster_Highlight" style="opacity: 0.4;background-image: radial-gradient(ellipse at left top, <%= color %> 5%, <%= color %>00 70%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+  </div>
+
+  <div class="Poster_Scrim" style="opacity: 0.35;
+                                         background-image: linear-gradient(5deg, #000 0%, transparent 50%), radial-gradient(ellipse at top right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 20%);position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+  </div>
+
+  <div class="ui text container" style="margin-left: 56px !important; margin-right: 56px !important;">
+    <div class="ui basic segment">
+      <div style="position: relative; white-space: normal;z-index: 10;top: 0;font-weight: 600; letter-spacing: -1px;color: #fff; margin: 12px 0 10px; bottom: calc(32px + 60px); font-stretch: normal; text-rendering: optimizelegibility;" class="ui huge inverted header"><%= masthead.name %></div>
+
+      <div class="ui inverted horizontal list" style="margin-right: 12px;">
+        <div class="item">
+          <div class="ui inverted mini horizontal statistic">
+            <div class="value" style="color: #fff; font-size: 14px !important; line-height: 21px !important; font-weight: 600;">
+              <%= tv.average_rating.try &.to_s %>
+            </div>
+            <div class="label">
+              <i class="star icon"></i>
+            </div>
+          </div>        
+        </div>
+      </div>
+      <div class="ui inverted horizontal list" style="margin-right: 12px;">
+        <div class="item" style="color: #fff; font-size: 14px; line-height: 21px; font-weight: 600;">
+          <%= tv.release_date.try &.to_s.[0 .. 3] %>
+        </div>
+      </div>
+      <div class="ui inverted horizontal list" style="margin-right: 12px;">
+        <div class="item" style="color: #fff; font-size: 14px; line-height: 21px; font-weight: 600;">
+          <%= tv.certification.try &.to_s %>
+        </div>
+      </div>
+
+      <div style="color: #fff; position: relative; font-size: 14px; line-height: 21px; margin-bottom: 12px;">
+        <%= masthead.overview %>
+      </div>
+
+      <div class="ui inverted list" style="font-size: 14px; line-height: 21px; margin-bottom: 0; max-width: 800px;">
+        <div class="item">
+          <p>
+          <span style="color: #fff; font-weight: 600">Starring</span>
+          <span style="color: #fff">
+            <%= tv.actors.try &.[0 .. 3].to_a.join(", ") %>
+          </span>
+          </p>
+        </div>
+        <div class="item">
+          <p>
+          <span style="color: #fff; font-weight: 600">Genres</span>
+          <span style="color: #fff">
+            <%= tv.genres.try &.to_a.join(", ") %>
+          </span>
+          </p>
+        </div>
+        <div class="item">
+          <p>
+          <span style="color: #fff; font-weight: 600">Subtitles</span>
+          <span style="color: #fff">
+          </span>
+          </p>
+        </div>
+        <div class="item">
+          <p>
+          <span style="color: #fff; font-weight: 600">Audio languages</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ui hidden divider"></div>
+
+<div style="padding-left: 56px;padding-right: 56px;margin: auto;">
+  <div class="ui basic segment">
+    <div class="sixteen wide column">
+      <%= rendered "components/player" %>
+    </div>
+  </div>
+</div>

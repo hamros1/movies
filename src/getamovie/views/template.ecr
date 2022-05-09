@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="<%= env.get("preferences").as(Preferences).locale %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= yield_content "header" %>
+    <link rel="stylesheet" href="/css/semantic.css?v=<%= Time.utc.to_unix_ms %>">
+    <link rel="stylesheet" href="/css/icons.min.css?v=<%= Time.utc.to_unix_ms %>">
+    <link rel="stylesheet" href="/css/default.css?v=<%= Time.utc.to_unix_ms %>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/7.0.6/swiper-bundle.css" integrity="sha512-k/ajQk10gq0MXEJ3gDVRQe4ZkmXDsGGDa4D5PWCQDH1drJmipCfhZHjj+WsXqyEs0dlo1gJmaPbviTb8yLC5hg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <% locale = LANGS[env.get("preferences").as(Preferences).locale]? %>
+
+  <body class="pagebody" style="height: 100%; position: relative; min-height: 100%;">
+    <% if x %>
+      <% if env.request.path == "/browse" %>
+	<% masthead = (GetAMovie::Jobs::PullSuggestionsJob::POPULAR_MOVIES.get + GetAMovie::Jobs::PullSuggestionsJob::POPULAR_TV.get).sample %>
+
+	<div class="ui inverted vertical masthead segment">
+	  <% img = masthead.backdrops.try &.to_a[0].try &.to_s %>
+	  <% color = get_avg_color(img) %>
+	  <div class="Poster_Base" style="background-color: <%= color %>; position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+	  </div>
+
+	  <div class="Poster_Art" style="position: absolute;top: 0;right: 0;bottom: 0;left: 0;opacity: 0.8;top: 0;right: 0;bottom: 0;left: 0;opacity: 0.8;background-image: linear-gradient(80deg, hsla(198, 50%, 40%, 1) 10%, hsla(198, 50%, 40%, 0) 20%);">
+	    <img src="<%= "#{HOST_URL}/images#{img}" %>" style="object-fit: cover; height: 100%; width: 100%; overflow: hidden; image-rendering: optimizequality;">
+	  </div>
+
+	  <div class="Poster_Gradient" style="background-image: linear-gradient(245deg, <%= color %>00 35%, <%= color %> 70%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+	  </div>
+
+	  <div class="Poster_Highlight" style="opacity: 0.7;background-image: radial-gradient(ellipse at left top, <%= color %> 5%, <%= color %>00 70%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+	  </div>
+
+	  <div class="Poster_Scrim" style="opacity: 0.35;
+	    background-image: linear-gradient(5deg, #000 0%, transparent 50%), radial-gradient(ellipse at top right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 20%);;position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+	  </div>
+
+	  <div class="ui text container" style="margin-left: 56px !important; margin-right: 56px !important; padding-top: 18px; padding-bottom: 30px;">
+	    <div class="ui basic segment">
+	      <div style="color: rgb(255, 255, 255); font-weight: 500; font-size: 1rem; line-height: 15px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: -8px; scroll-behavior: unset;position: relative;"><% if masthead.responds_to? :runtime %>Now Streaming<% else %>Now Streaming All Episodes<% end %></div>
+
+	      <div style="position: relative; -webkit-box-orient: vertical;-webkit-line-clamp: 2;display: -webkit-box;overflow: hidden;white-space: normal;z-index: 10;top: 0;font-weight: 400; letter-spacing: -1px;color: #fff; margin: 24px 0 10px; bottom: calc(32px + 60px); font-stretch: normal; text-rendering: optimizelegibility; font-size: 3.5rem; line-height: 1.18em;" class="ui huge inverted header"><%= masthead.title %></div>
+
+	      <div style="color: #fff; position: relative; -webkit-box-orient: vertical;-webkit-line-clamp: 4;display: -webkit-box;overflow: hidden;max-height: 6em; font-size: 16px; line-height: 24px;">
+		<%= masthead.overview %>
+	      </div>
+
+	      <a style="text-transform: uppercase; letter-spacing: 1px; position: relative; margin-top: 24px; font-weight: 600;" class="ui icon labeled button" href="<% if masthead.responds_to? :runtime %>/watch?trackId=<%= masthead.id %><% else %>/tv/<%= masthead.id %>?season_select=1&episode=1<% end %>"><i class="play icon"></i><% if masthead.responds_to? :number_of_seasons %>Play Now S1:E1<% else %>Play Now<% end %></a>
+
+	      <% if trailer_url = masthead.trailer_url %>
+		<a style="text-transform: uppercase; letter-spacing: 1px; position: relative; margin-top: 24px; font-weight: 600;" class="ui inverted icon labeled button" href="<%= trailer_url %>"><i class="play icon"></i>Watch Trailer</a>
+	      <% end %>
+	    </div>
+	  </div>
+	</div>
+      <% end %>
+
+      <div class="ui hidden divider"></div>
+
+      <div id="content" style="padding-left: 56px;padding-right: 56px;margin: auto;">
+	<div class="ui basic segment">
+	  <div class="sixteen wide column">
+	    <%= content %>
+	  </div>
+	</div>
+      </div>
+    <% else %>
+      <%= content %>
+    <% end %>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script src="/js/semantic.min.js?v=<%= Time.utc.to_unix_ms %>"></script>
+    <script type="text/javascript">
+      $('document').ready(function(){
+	      $('#login_button').click(function(){
+		      $('#login_modal').modal('show');
+		    });
+	    });
+    </script>
+    <script type="text/javascript">
+      $('document').ready(function(){
+	      $('#register_button').click(function(){
+		      $('#register_modal').modal('show');
+		    });
+	    });
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+	      $('.ui.search').search({
+		      apiSettings: {
+			      url: '/api/search/{query}'
+			    },
+		      fields: {
+			      results : 'items',
+			      title : 'title',
+			      description : 'description',
+			      url : 'url',
+			      image : 'image',
+			      price : 'average_rating'
+			    },
+		      minCharacters: 3
+		    });
+	    });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/7.0.6/swiper-bundle.min.js" integrity="sha512-r1+wZ6Dt2YNg8FujUHBbiXmDRNcVLTcN2q+lm0TSbmoBNUFJ4FdQ3zLeShz0bllBlzQ0QWtZuzJgdrW9xGc2Dw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+	      var thisSwiper = [];
+	      $('.swiper').each(function(i) {
+		      var this_ID = $(this).attr('id');
+
+		      thisSwiper[i] = new Swiper('#'+this_ID, {
+			      // Optional parameters
+			      direction: 'horizontal',
+			      loop: false,
+			      slidesPerView: 'auto',
+			      centeredSlides: false,
+			      uniqueNavElements: true,
+			      preloadImages: false,
+			      lazy: true,
+
+			      // Navigation arrows
+			      navigation: {
+				      nextEl: '#'+this_ID+'_Next',
+				      prevEl: '#'+this_ID+'_Prev',
+				    },
+
+			      on: {
+				      slideChange: function() {
+					      if (this.activeIndex==0) {
+						      document.getElementById(this_ID+'_Next').style.display = "block";
+						      document.getElementById(this_ID+'_Prev').style.display = "none";
+						    }
+					      else if (this.activeIndex==this.slides.length-1) {
+						      document.getElementById(this_ID+'_Next').style.display = "none";
+						      document.getElementById(this_ID+'_Prev').style.display = "block";
+						    }
+					      else {
+						      document.getElementById(this_ID+'_Next').style.display = "block";
+						      document.getElementById(this_ID+'_Prev').style.display = "block";
+						    }
+					    }
+				    }
+			    })
+		    })});
+    </script>
+
+    <script src="hello_world.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<% content_types = {
+  "Action and adventure movies",
+  "Comedy movies",
+  "Drama movies",
+  "Fantasy movies",
+  "Horror movies",
+  "Military and war movies",
+  "Mystery and thriller movies",
+  "Romance movies",
+  "Science fiction movies",
+} %>
+  <% 4.times do %>
+    <% content_types.to_a.shuffle[0 .. 9].each_with_index do |content_type, index| %>
+        <div class="ui vertical segment"><div class="ui huge header" style="font-size: 1.4vw; color: #e5e5e5;font-weight: 600;letter-spacing: -0.5px;"><%= content_type %>
+            <span><a href="/browse/<%= URI.encode_www_form(content_type.downcase) %>" style="color:#79b8f3;transition:color .2s ease-in-out;font-size:.9vw;font-weight:600;"><%= t(locale, "See more") %></a></span>
+          </div>
+          <% items = PG_DB.query_all("SELECT * FROM movies WHERE array_to_string(genres, ', ') LIKE '%#{content_type.gsub(/(movies|TV|and|Military)/, "").split().shuffle[0].capitalize}%' ORDER BY random() LIMIT 12", as: Video) %>
+        <div class="ui six column stretched grid">
+          <% items.each do |item| %>
+            <%= rendered "components/item" %>
+          <% end %>
+        </div></div>
+      <% end %>
+    <% end %>

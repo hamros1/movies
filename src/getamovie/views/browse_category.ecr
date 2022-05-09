@@ -1,0 +1,7 @@
+<div class="ui inverted header" style="font-size: 48px; font-weight: 400;"><%= category %></div>
+<div class="ui vertical segment"><div class="ui six column stretched grid">
+      <% items.each do |item| %>
+        <%= rendered "components/item" %>
+      <% end %>
+    </div>
+  </div>

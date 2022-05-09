@@ -1,0 +1,20 @@
+<% id = Random.rand(UInt32) %>
+<div class="Slider" style="position: relative; color: #292b2c;">
+  <div id="Slider_Wrapper" style="position: relative;height: 100%;display: flex;justify-content: center;align-items: center;">
+    <div id="Slider_<%= id %>_Prev" class="ui black circular icon button" style="position: absolute; z-index: 10; display: none; transform: translateY(-50%) translateX(-50%); left: 0; top: 0; margin-top: calc((50% * (9 / 16) / 6) - (42px / 6));"><i class="angle left icon"></i></div>
+    <div id="Slider_<%= id %>" class="swiper" style="color: #292b2c;">
+      <div class="swiper-wrapper">
+        <% items.each_slice(6) do |slice| %>
+          <div class="swiper-slide">
+            <div class="ui equal width stretched grid">
+              <% slice.each do |item| %>
+                <%= rendered "components/item" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div id="Slider_<%= id %>_Next" class="ui black circular icon button" style="position: absolute; z-index: 10; right: 0; top: 0; transform: translateY(-50%) translateX(50%); margin-top: calc((50% * (9 / 16) / 6) - (42px / 6));"><i class="angle right icon"></i></div>
+  </div>
+</div>

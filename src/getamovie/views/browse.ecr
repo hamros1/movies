@@ -1,0 +1,207 @@
+<% content_types = {
+  "Because you watched",
+  "Action and adventure movies",
+  "Comedy movies",
+  "Drama movies",
+  "Fantasy movies",
+  "Horror movies",
+  "Military and war movies",
+  "Mystery and thriller movies",
+  "Romance movies",
+  "Science fiction movies",
+  "Action and adventure TV",
+  "Comedy TV",
+  "Drama TV",
+  "Horror TV",
+  "Romance TV",
+  "Science fiction TV",
+} %>
+
+<% if items = PG_DB.query_all("SELECT * FROM movies ORDER BY random() LIMIT 8", as: Video) %>
+  <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Movies for you<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="#"> See more</a></h2></span>
+  <div class="ui vertical segment" style="background: transparent;">
+    <%= rendered "components/poster_slider_horizontal" %>
+  </div>
+  <div class="ui hidden divider"></div>
+<% end %>
+
+<% if items = GetAMovie::Jobs::PullSuggestionsJob::TOP_RATED_MOVIES.get %>
+  <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Top rated movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="#"> See more</a></h2></span>
+  <div class="ui vertical segment">
+    <%= rendered "components/slider" %>
+  </div>
+  <div class="ui hidden divider"></div>
+<% end %>
+
+<% if items = GetAMovie::Jobs::PullSuggestionsJob::TOP_RATED_TV.get %>
+  <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Top rated TV<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="#"> See more</a></h2></span>
+  <div class="ui vertical segment">
+    <%= rendered "components/slider" %>
+  </div>
+  <div class="ui hidden divider"></div>
+<% end %>
+
+<% if items = GetAMovie::Jobs::PullSuggestionsJob::POPULAR_MOVIES.get[0 .. 11] %>
+  <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Popular movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="#"> See more</a></h2></span>
+  <div class="ui vertical segment" style="background: transparent">
+    <%= rendered "components/slider" %>
+  </div>
+  <div class="ui hidden divider"></div>
+<% end %>
+
+<% if items = GetAMovie::Jobs::PullSuggestionsJob::POPULAR_TV.get[0 .. 11] %>
+  <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Popular TV<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="#"> See more</a></h2></span>
+  <div class="ui vertical segment">
+    <%= rendered "components/slider" %>
+  </div>
+  <div class="ui hidden divider"></div>
+<% end %>
+
+<% index = 0 %>
+<% presentations = Hash(Int32, String).new %>
+<% loop do %>
+  <% content_type = content_types.sample %>
+  <% if index==18%>
+    <% break %>
+  <% end %>
+
+  <% if presentations.select{ |k,v| k > index - 6 }.has_value? content_type %>
+    <% next %>
+  <% end %>
+
+  <% if content_type.includes? "TV" %>
+    <% if items = PG_DB.query_all("SELECT * FROM tv ORDER BY random() LIMIT 12", as: TV) %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;"><%= content_type %><a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Action and adventure movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::ACTION_AND_ADVENTURE_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Action and adventure movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Comedy movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::COMEDY_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Comedy movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Drama movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::DRAMA_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Drama movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Fantasy movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::FANTASY_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Fantasy movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Horror movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::HORROR_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Horror movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Military and war movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::MILITARY_AND_WAR_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Military and war movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Mystery and thriller movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::MYSTERY_AND_THRILLER_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Mystery and thriller movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Romance movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::ROMANCE_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Romance movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Science fiction movies" %>
+    <% if items = GetAMovie::Jobs::PullSuggestionsJob::SCIENCE_FICTION_MOVIES.get %>
+      <% items = items.shuffle[0 .. 11] %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Science fiction movies<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="/browse/<%= URI.encode_www_form(content_type.downcase) %>"> See more</a></h2></span>
+    <% end %>
+
+  <% elsif content_type == "Because you watched" %>
+    <% if continuations.size == 0 %>
+      <% next %>
+    <% end %>
+
+    <% watched = continuations.sample %>
+    <% if items = PG_DB.query_all("SELECT * FROM movies WHERE array_to_string(genres, ', ') LIKE '%#{watched.genres[0]}%' ORDER BY random() LIMIT 8", as: Video) %>
+      <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Because you watched<a style="margin-left: 8px; color: #79b8f3" href="/watch?trackId=<%= watched.id %>"><%= watched.title %></a></h2></span>
+      <div class="ui vertical segment">
+        <%= rendered "components/poster_slider_horizontal" %>
+      </div>
+      <div class="ui hidden divider"></div>
+    <% end %>
+    <% presentations[index] = content_type %>
+    <% index += 1 %>
+    <% next %>
+  <% else %>
+  <% end %>
+
+  <% if items.size > 0 %>
+    <div class="ui vertical segment">
+      <%= rendered "components/slider" %>
+    </div>
+    <div class="ui hidden divider"></div>
+
+    <% presentations[index] = content_type %>
+    <% index += 1 %>
+  <% end %>
+<% end %>
+
+<% if items = PG_DB.query_all("SELECT DISTINCT ON (id) id, name, profile_path, biography, known_for, place_of_birth, birthday, popularity FROM actors WHERE popularity::numeric > 0 LIMIT 16", as: Actor) %>
+  <span><h2 class="ui inverted header" style="display: flex; justify-content: start; -webkit-box-pack: start; font-weight: 600; font-size: 18px;">Top actors<a style="margin-left: 8px; font-size: 13px; font-weight: 400; color: #79b8f3" href="#"> See more</a></h2></span>
+  <div class="ui vertical segment">
+<% id = Random.rand(UInt32) %>
+<div class="Slider" style="position: relative; color: #292b2c;">
+  <div id="Slider_Wrapper" style="position: relative;height: 100%;display: flex;justify-content: center;align-items: center;">
+    <div id="Slider_<%= id %>_Prev" class="ui black circular icon button" style="position: absolute; z-index: 10; display: none; transform: translateY(-50%) translateX(-50%); left: 0; top: 50%;"><i class="angle left icon"></i></div>
+    <div id="Slider_<%= id %>" class="swiper" style="width: 100%; color: #292b2c;">
+      <div class="swiper-wrapper">
+        <% items.each_slice(8) do |slice| %>
+	  <div class="swiper-slide"> 
+            <div class="ui equal width stretched grid">
+              <% slice.each_with_index do |item, index| %>
+                <div class="column">
+                  <a id="Poster" class="ui bordered image" style="min-height: 100%; min-width: 100%; max-height: 100%; max-width: 100%; width: 100% !important; height: 100% !important; overflow: hidden !important; box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;" href="#">
+                    <% profile_path = item.profile_path %>
+                    <div class="Poster_Base" style="background-color: rgba(13, 13, 13);position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+                    </div>
+                    <img src="/images<%= profile_path %>" style="min-height: 100%;min-width: 100%;top: 0px;right: 0px;bottom: 0px;left: 0px;max-height: 100%; max-width: 100%; object-position: top; image-rendering: optimizequality; display: block; object-fit: cover;">
+                    <div class="Poster_Gradient" style="background-image: linear-gradient(15deg, rgba(13, 13, 13) 5%, rgba(13, 13, 13, 0) 75%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+                    </div>
+                    <div class="Poster_Highlight" style="opacity: 0.4;
+                    background-image: radial-gradient(circle at center bottom, rgba(13, 13, 13) 10%, rgba(13, 13, 13, 0) 60%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+                    </div>
+                    <div class="Poster_Scrim" style="opacity: 0.25;
+                    background-image: linear-gradient(345deg, #000 5%, transparent 25%);position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+                    </div>
+                    <div class="Poster_Content" style="filter:none; position: absolute;bottom: 12px;left: 24px;color: #fff;width: calc(100% - 52px); text-shadow: none;">
+		      <div class="ui inverted header" style="-webkit-box-orient: vertical;-webkit-line-clamp: 2;display: -webkit-box;overflow: hidden; white-space: normal;z-index: 10;top: 0; font-weight: 700; letter-spacing: -1px;color: #fff; margin: 24px 0 10px; bottom: calc(32px + 60px); font-stretch: normal; text-rendering: optimizelegibility; font-size: 1.6rem; line-height: 1.18em;"><%= item.name %></div>
+                    </div>
+                  </a>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="Slider_<%= id %>_Next" class="ui black circular icon button" style="position: absolute; z-index: 10; right: 0; top: 50%; transform: translateY(-50%) translateX(50%);"><i class="angle right icon"></i></div>
+  </div>
+</div>
+  </div>
+  <div class="ui hidden divider"></div>
+<% end %>
+
+

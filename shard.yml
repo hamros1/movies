@@ -1,0 +1,20 @@
+name: getamovie
+version: 0.1.0
+
+authors:
+  - Hampus Andreas Niklas Rosencrantz <hamros@tuta.io>
+
+targets:
+  getamovie:
+    main: src/getamovie.cr
+
+dependencies:
+    pg:
+        github: will/crystal-pg
+    kemal:
+        github: kemalcr/kemal
+    stumpy_jpeg:
+      github: stumpycr/stumpy_jpeg
+
+crystal: 1.0.0
+

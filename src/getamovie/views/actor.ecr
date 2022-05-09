@@ -1,0 +1,47 @@
+<div class="ui text segment" style="margin-bottom: 1.5em;margin-top: 1.5em;background-blend-mode: darken;">
+  <div class="ui items">
+    <div class="item">
+      <a class="ui image">
+        <img src="<%= "#{HOST_URL}/images#{actor.profile_path.try &.to_s}" %>" style="height: 150px;border-radius: 6px;object-fit: cover;object-position: center;border: 1px solid #0D141B;">
+      </a>
+      <div class="content">
+        <h2 class="ui header" style="line-height: 24px;line-height: 32px;font-weight: 700;color:#fff;"><%= actor.name %></h2>
+        <div class="meta" style="line-height: 24px;color:#fff;font-size:17px;">
+          <p><%= actor.known_for %></p>
+          <p><%= t(locale, "Born") %> <%= actor.birthday %> <%= t(locale, "in") %> <%= actor.place_of_birth %></p>
+        </div>
+        <div class="description" style="line-height: 24px;color:#fff;font-size:16px;">
+          <p><%= actor.biography %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui padded vertical segment">
+  <h2 class="ui header" style="color:#fff;font-weight:700;line-height:24px;"><%= t(locale, "Top titles") %></h2>
+  <% items = PG_DB.query_all("SELECT * FROM movies WHERE array_to_string(actors, ', ') LIKE '%#{actor.name}%' ORDER BY popularity LIMIT 5", as: Video) %>
+  <div class="ui nine column very relaxed grid" style="padding:1em;">
+    <% items.each do |item| %>
+      <div class="column" style="margin-top: -0.5em;">
+        <div class="item">
+          <div class="ui image">
+            <img src="<%= "#{HOST_URL}/images#{item.posters.try &.[0]}" %>" style="opacity:70%;box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;border-radius:3px;border:1px solid #252e39;">
+            <span style="position: absolute;z-index: 999;top: 5%;right: 5%;color: #fff;font-size: 1.5em;background-color: rgba(0,0,0, .6);border-radius: 3px;line-height: 1.2;padding: 0.1em;"><%= recode_length_seconds((item.runtime.try &.to_i || 0) * 60) %></span>
+            <div class="year" style="color: #fff;z-index: 999;font-size: 1.4em;position: absolute;bottom: 5%;right: 5%;"><%= item.release_date.try &.[0 .. 3] %></div>
+          </div>
+          <div class="content"> 
+            <div class="description" style="margin-top:0.25em;line-height:27px;font-size:1.4em;display:block;font-weight:700;white-space:normal;margin-bottom:4px;"><a style="color:#fff;" href="/watch?trackId=<%= item.id %>"><%= item.title %></a></div>
+            <div class="extra"><div class="ui mini green statistic">
+                <div class="value" style="font-weight:400;">
+                  <i class="trophy icon" style="color:#ffa724"></i>
+                  <%= item.popularity.try &.to_s.to_f || 0 %>
+                </div>
+                <div class="label" style="color:#e5e5e5;font-weight:700;"><%= t(locale, "Popularity") %></div>
+              </div></div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<% id = Random.rand(UInt32) %>
+<div class="Slider" style="position: relative; color: #292b2c;">
+  <div id="Slider_Wrapper" style="position: relative;height: 100%;display: flex;justify-content: center;align-items: center;">
+    <div id="Slider_<%= id %>_Prev" class="ui black circular icon button" style="position: absolute; z-index: 10; display: none; transform: translateY(-50%) translateX(-50%); left: 0; top: 50%;"><i class="angle left icon"></i></div>
+
+    <div id="Slider_<%= id %>" class="swiper" style="color: #292b2c;">
+      <div class="swiper-wrapper">
+	<% items.each_slice(4) do |slice| %>
+	  <div class="swiper-slide">
+	    <div class="ui equal width stretched grid" style="margin-left: -0.5rem !important;margin-right: -0.5rem !important;">
+	      <% slice.each_with_index do |item, index| %>
+		<div class="column" style="padding-left: 0.5rem !important; padding-right: 0.5rem !important;">
+		  <a id="Poster" class="ui image" style="min-height: 100%;
+					min-width: 100%;
+					max-height: 100%;
+					max-width: 100%;
+					width: 100% !important;
+					height: 100% !important;
+					overflow: hidden !important;
+					box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;" href="<% if item.responds_to? :runtime %>/watch?trackId=<%= item.id %><% else %>/tv/<%= item.id %>?season_select=1<% end %>">
+
+					<% img = item.backdrops.try &.to_a[0].try &.to_s %>
+					<% color = get_avg_color(img) %>
+
+					<div class="Poster_Base" style="background-color: <%= color %>;position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+					</div>
+
+					<img src="/images<%= img %>" style="min-height: 100%;min-width: 100%;top: 0px;right: 0px;bottom: 0px;left: 0px;object-fit: contain; max-height: 100%; max-width: 100%; object-postion: top; image-rendering: optimizequality; display: block; box-sizing: border-box;">
+
+
+					<div class="Poster_Gradient" style="background-image: linear-gradient(15deg, <%= color %> 5%, <%= color %>00 75%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+					</div>
+
+					<div class="Poster_Highlight" style="opacity: 0.4;
+					  background-image: radial-gradient(circle at center bottom, <%= color %> 10%, <%= color %>00 60%); position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+					</div>
+
+					<div class="Poster_Scrim" style="opacity: 0.25;
+					  background-image: linear-gradient(345deg, #000 5%, transparent 25%);position: absolute;top: 0;right: 0;bottom: 0;left: 0;">
+					</div>
+
+					<div class="Poster_Content" style="filter:none; position: absolute;bottom: 12px;left: 24px;color: #fff;width: calc(100% - 62px - 48px); text-shadow: none;">
+					  <div style="color: #e5e5e5;font-size: 12px;font-weight: 600;letter-spacing: 0.5px;line-height: 13px;text-transform: uppercase;">
+					    For fans of <%= item.genres.try &.to_a[0] %></div>
+
+					  <div class="ui inverted header" style="-webkit-box-orient: vertical;-webkit-line-clamp: 2;display: -webkit-box;overflow: hidden;white-space: normal;z-index: 10;top: 0;font-weight: 700; letter-spacing: -1px;color: #fff; margin: 12px 0 6px; bottom: calc(32px + 60px); font-stretch: normal; text-rendering: optimizelegibility; font-size: 1.6rem; line-height: 1.18em;"><%= item.title %></div>
+
+					  <div class="description" style="font-size: 1rem; text-rendering: optimizelegibility; line-height: 22px;z-index: 999;margin-bottom: 0; text-rendering: optimizelegibility; font-weight: 600;">
+					    <% if certification = item.certification %>
+					      <% if certification != "" %>
+						<%= certification %> • 
+						</span>
+					      <% end %>
+					    <% end %>
+
+					    <% if item.responds_to? :runtime %>
+					      <%= item.genres[0 .. 1].sort.join(", ") %> • <%= item.release_date.try &.to_s[0 .. 3] %>
+					    <% else %>
+					      <%= item.genres[0 .. 1].sort.join(", ") %> • TV Series (<%= item.release_date.try &.to_s[0 .. 3] %>)
+					    <% end %>
+					  </div>
+					  <div id="Hover_Data" style="display: block;max-height: 0;overflow: hidden;opacity: 0;margin-top: 8px; font-size: 1rem; font-weight: 400; margin-bottom: 4px;">
+					    <div style="-webkit-box-orient: vertical;-webkit-line-clamp: 3;display: -webkit-box;overflow: hidden;max-height: 6em;">
+					      <%= item.overview %>
+					    </div>
+					  </div>
+					</div>
+					<div id="Poster_Controls" style="position: absolute; top: 0; bottom: 24px; right: 12px;display: flex;align-items: end;justify-content: center; z-index: 999;transform: none !important;transition: none !important;">
+					  <div class="ui inverted circular icon button" style="background: transparent none;color: #FFFFFF; opacity: 85%;"><i class="arrow right icon"></i></div>
+					</div>
+		  </a>
+		</div>
+	      <% end %>
+	    </div>
+	  </div>
+	<% end %>
+      </div>
+    </div>
+
+    <div id="Slider_<%= id %>_Next" class="ui black circular icon button" style="position: absolute; z-index: 10; right: 0; top: 50%; transform: translateY(-50%) translateX(50%);"><i class="angle right icon"></i></div>
+  </div>
+</div>
+

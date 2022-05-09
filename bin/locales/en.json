@@ -1,0 +1,10 @@
+{
+  "`x` seasons available": {
+    "([^.,0-9]|^)1([^.,0-9]|$)": "`x` season available",
+    "": "`x` seasons available"
+  },
+  "Action & Adventure": "Action",
+  "Science Fiction": "Sci-Fi",
+  "Sci-Fi & Fantasy": "Fantasy",
+  "War & Politics": "War"
+}

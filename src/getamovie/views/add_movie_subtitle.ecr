@@ -1,0 +1,18 @@
+<form class="ui inverted form" action="/admin/add_movie_caption" method="post">
+  <div class="field">
+    <label>ID</label>
+    <input type="text" name="id" placeholder="ID">
+  </div>
+  <div class="field">
+    <label>Language</label>
+    <input type="text" name="language" placeholder="Language">
+  </div>
+  <div class="field">
+    <label>Caption URL</label>
+    <input type="text" name="caption_url" placeholder="Caption URL">
+  </div>
+  <button type="submit" type="submit" class="ui labeled icon button">
+    <i class="cloud upload icon"></i>
+    <%= t(locale, "Upload") %>
+  </a>
+</form>

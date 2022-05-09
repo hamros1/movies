@@ -1,0 +1,106 @@
+<% case item when %>
+<% when Episode %>
+  <div class="column">
+    <div class="ui item">
+      <div class="Item_Hover_Wrapper" style="margin-bottom: 12px;">
+        <a class="ui bordered image" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px; height: 100%; width: 100%; box-sizing: border-box; object-fit: cover; color: #292b2c;" href="/tv/<%= item.tv_id %>?season_select=<%= item.season_number %>&episode=<%= item.episode_number %>">
+		<img id="Item_Image" src="<%= "#{HOST_URL}/images#{item.images.try(&.[0])}" %>" style="opacity: 1; color: #292b2c; image-rendering: optimizequality;">
+        </a>
+      </div>
+      <div class="description" style="margin-top: 24px; color: #d2d2d2; font-weight: 500; font-size: 12px; line-height: 13px; letter-spacing: 1px; text-transform: uppercase; display: -webkit-box;
+                  -moz-box-orient: vertical;
+                  -webkit-line-clamp: 5;
+                  overflow: hidden;">
+        <%= t(locale, "Episode") %> <%= item.episode_number %>
+      </div>
+      <a class="ui inverted header" href="/tv/<%= item.tv_id %>?season_select=<%= item.season_number %>&episode=<%= item.episode_number %>" style="max-width: 235px;
+color: #fff;
+text-rendering: optimizelegibility;
+margin-top: 4px;
+margin-bottom: 4px;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+display: -webkit-box;
+overflow: hidden;
+line-height: 1.18em;
+max-height: 2.36em;
+white-space: normal;
+font-size: 20px;
+letter-spacing: -0.5px;
+-webkit-text-stroke-width: 0.35px;
+-webkit-text-stroke-color: rgba(41,44,51,0);
+font-weight: 400;">
+        <%= item.name %>
+      </a>
+      <span style="display: -webkit-box;
+                   -moz-box-orient: vertical;
+                   -webkit-line-clamp: 4;
+                   overflow: hidden;
+                   font-size: 14px; text-rendering: optimizelegibility;color:#d2d2d2; font-weight: 400; line-height: 1.5em;">
+        <%= item.overview %>
+      </span>
+    </div>
+  </div>
+
+<% else %>
+  <div class="column">
+    <div class="ui item">
+      <div class="Item_Hover_Wrapper" style="margin-bottom: 12px;">
+        <a class="ui bordered rounded image" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px; height: 100%;width: 100%; box-sizing: border-box; object-fit: cover;" href="<% if item.responds_to? :runtime %>/watch?trackId=<%= item.id %><% else %>/tv/<%= item.id %>?season_select=1<% end %>">
+          <img id="Item_Image" src="<%= "#{HOST_URL}/images#{item.backdrops.try(&.sample)}" %>" style="opacity: 1; image-rendering: optimizequality;">
+          <div id="Item_Controls" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;display: flex;align-items: center;justify-content: center; z-index: 999;">
+            <div class="ui huge inverted circular icon button" style="background: transparent none;color: #FFFFFF;"><i class="arrow right icon"></i></div>
+          </div>
+        </a>
+      </div>
+      <a href="<% if item.responds_to? :runtime %>/watch?trackId=<%= item.id %><% else %>/tv/<%= item.id %>?season_select=1<% end %>" class="ui inverted header" style="max-width: 235px;
+color: #fff;
+text-rendering: optimizelegibility;
+margin-top: 4px;
+margin-bottom: 4px;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+display: -webkit-box;
+overflow: hidden;
+line-height: 1.18em;
+max-height: 2.36em;
+white-space: normal;
+font-size: 20px;
+letter-spacing: -0.5px;
+-webkit-text-stroke-width: 0.35px;
+-webkit-text-stroke-color: rgba(41,44,51,0);
+font-weight: 400;">
+        <%= item.title %>
+      </a>
+        <% if certification = item.certification %>
+          <% if certification != "" %>
+        <span style="font-size: 14px; text-rendering: optimizelegibility;color:#d2d2d2; font-weight: 400; line-height: 1.429em; font-stretch: normal; white-space: normal; margin: 0;">
+          <%= certification %> • 
+        </span>
+      <% end %>
+      <% end %>
+      <span style="font-size: 14px; text-rendering: optimizelegibility;color:#d2d2d2; font-weight: 400; line-height: 1.429em; font-stretch: normal; white-space: normal; margin: 0;">
+        <%= item.genres[0 .. 1].sort.join(", ") %>
+      </span>
+      <% if item.responds_to? :runtime %>
+        <span style="font-size: 14px; text-rendering: optimizelegibility;color:#d2d2d2; font-weight: 400; line-height: 1.429em; font-stretch: normal; white-space: normal; margin: 0;">• <%= item.release_date.try &.[0 ..3] %>
+        </span>
+      <% else %>
+        <span style="font-size: 14px; text-rendering: optimizelegibility;color:#d2d2d2; font-weight: 400; line-height: 1.429em; font-stretch: normal; white-space: normal; margin: 0;">• TV Series (<%= item.release_date.try &.[0 ..3] %>)
+        </span>
+      <% end %>
+
+      <% if item.responds_to? :runtime %>
+        <% if percent_cookie = env.request.cookies[item.id.to_s]? %>
+          <% percent = JSON.parse(URI.decode_www_form(percent_cookie.value)) %>
+          <div class="extra content">
+            <div class="ui red bottom attached progress" data-percent="<%= percent %>">
+              <div class="bar" style="transition-duration: 400ms; width: <%= percent %>%;">
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

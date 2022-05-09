@@ -1,0 +1,337 @@
+<% last_iteration = "" %>
+
+<% content_types = {
+  "Action and adventure movies",
+  "Comedy movies",
+  "Drama movies",
+  "Fantasy movies",
+  "Horror movies",
+  "Military and war movies",
+  "Mystery and thriller movies",
+  "Romance movies",
+  "Science fiction movies",
+  "Action and adventure TV",
+  "Comedy TV",
+  "Drama TV",
+  "Fantasy TV",
+  "Horror TV",
+  "Military and war TV",
+  "Mystery and thriller TV",
+  "Romance TV",
+  "Science fiction TV",
+} %>
+
+<div class="sixteen wide column">
+
+
+  <div class="ui vertical segment">
+    <h2 class="ui header" style="line-height:24px;color:#e5e5e5;"><%= t(locale, "Popular movies") %>
+      <span><a href="#" style="color:#79b8f3;transition:color .2s ease-in-out;font-size:.9vw;font-weight:700;"><%= t(locale, "See more") %></a></span>
+    </h2>
+
+    <div class="ui container six column grid">
+      <% trending_items = PG_DB.query_all("SELECT genres,title,id,release_date,runtime,backdrops,posters,popularity,average_rating FROM movies WHERE popularity::numeric > 0 ORDER BY popularity::numeric DESC LIMIT 12", as: SearchVideo) %>
+      <% trending_items.each do |item| %>
+        <div class="column">
+          <div class="hover_container">
+          <div class="ui items popular_page_items" style="background:linear-gradient(rgba(15, 23, 30,.6), rgba(15, 23, 30,.9)),url(<%= "#{HOST_URL}/images#{item.backdrops.try &.to_a.sample}" %>) !important;background-position:center !important;background-size:cover!important;box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+            <div class="item">
+              <a class="ui tiny image">
+                <% if item.release_date[0.. 3] == Time.utc.year.to_s %>
+                  <div style="z-index:1!important;margin-top: -1.7em;margin-left: 0.55em;opacity: 97.5%;font-size:12px;font-weight:normal;" class="ui teal mini ribbon label"><%= Time.utc.year.to_s %></div>
+                <% end %>
+                <img src="<%= "#{HOST_URL}/images#{item.posters.try &.to_a.sample}" %>" style="mix-blend-mode: screen; height: 10em; width:10em;box-sizing: border-box; object-fit: cover; margin-top:-0.2em;margin-bottom:0.2em;"> 
+              </a>
+              <div class="content" style="margin-left:-1em;background-blend-mode: normal; opacity: 1;">
+                <div class="header">
+                  <a href="/watch?trackId=<%= item.id %>" style="opacity: 1; display: inline-block; color:#fff;white-space:nowrap;max-width:175px;text-overflow:ellipsis;overflow:hidden;"><%= item.title %></a>
+                </div>
+                <div class="meta">
+                  <% item.genres[0 .. 1].each do |genre| %>
+                    <div class="ui tiny teal horizontal label"
+                         style="font-size: .9em;
+                                    font-weight: 700;
+                                    opacity: 90%;">
+                      <%= t(locale, genre) %>
+                    </div>
+                  <% end %>
+                </div>
+                <% if item.responds_to?(:popularity) %>          <div class="description">
+                  <div class="ui mini green statistic">
+                    <div class="value" style="font-weight:400;">
+                      <i class="trophy icon" style="color:#ffa724"></i>
+                      <%= item.popularity.try &.to_s.to_f || 0 %>
+                    </div>
+                    <div class="label" style="color:#e5e5e5;font-weight:700;"><%= t(locale, "Popularity") %></div>
+                  </div>
+
+                </div>
+              </div>
+            </div><% end %>
+            <% percent = PG_DB.query_one?("SELECT percent FROM timestamps WHERE video_id = $1 AND email = $2", item.id, user.as(User).email, as: Int32) %>
+            <% if percent %>
+              <div class="extra content">
+                <div class="ui red bottom attached progress" data-percent="<%= percent %>">
+                  <div class="bar" style="transition-duration: 300ms; width: <%= percent %>%;"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="ui vertical segment">
+    <h2 class="ui header" style="line-height:24px;color:#e5e5e5;"><%= t(locale, "Top rated movies") %>
+      <span><a href="#" style="color:#79b8f3;transition:color .2s ease-in-out;font-size:.9vw;font-weight:700;"><%= t(locale, "See more") %></a></span>
+    </h2>
+
+    <div class="ui container six column grid">
+      <% rated_items = PG_DB.query_all("SELECT genres,title,id,release_date,runtime,backdrops,posters,popularity,average_rating FROM movies WHERE average_rating::numeric > 0 ORDER BY average_rating::numeric DESC LIMIT 12", as: SearchVideo) %>
+      <% rated_items.each do |item| %>
+        <div class="column">
+          <div class="hover_container">
+          <div class="ui items popular_page_items" style="background:linear-gradient(rgba(15, 23, 30,.6), rgba(15, 23, 30,.9)),url(<%= "#{HOST_URL}/images#{item.backdrops.try &.to_a.sample}" %>) !important;background-position:center !important;background-size:cover!important;box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+            <div class="item">
+              <a class="ui tiny image">
+                <% if item.release_date[0.. 3] == Time.utc.year.to_s %>
+                  <div style="z-index:1!important;margin-top: -1.7em;margin-left: 0.55em;opacity: 97.5%;font-size:12px;font-weight:normal;" class="ui teal mini ribbon label"><%= Time.utc.year.to_s %></div>
+                <% end %>
+                <img src="<%= "#{HOST_URL}/images#{item.posters.try &.to_a.sample}" %>" style="mix-blend-mode: screen; height: 10em; width:10em;box-sizing: border-box; object-fit: cover; margin-top:-0.2em;margin-bottom:0.2em;"> 
+              </a>
+              <div class="content" style="margin-left:-1em;background-blend-mode: normal; opacity: 1;">
+                <div class="header">
+                  <a href="/watch?trackId=<%= item.id %>" style="opacity: 1; display: inline-block; color:#fff;white-space:nowrap;max-width:175px;text-overflow:ellipsis;overflow:hidden;"><%= item.title %></a>
+                </div>
+                <div class="meta">
+                  <% item.genres[0 .. 1].each do |genre| %>
+                    <div class="ui tiny teal horizontal label"
+                         style="font-size: .9em;
+                                      font-weight: 700;
+                                      opacity: 90%;">
+                      <%= t(locale, genre) %>
+                    </div>
+                  <% end %>
+                </div>
+                <% if item.responds_to?(:average_rating) %>          <div class="description">
+                  <div class="ui tiny orange horizontal statistic">
+                    <div class="value" style="font-weight:400;">
+                      <i class="star icon" style="color:#ffa724"></i>
+                      <%= item.average_rating.try &.to_s.to_f || 0 %>
+                    </div>
+                    <div class="label" style="color:#e5e5e5;font-weight:700;"><%= t(locale, "User Rating") %></div>
+                  </div>
+
+                </div>
+              </div>
+            </div><% end %>
+            <% percent = PG_DB.query_one?("SELECT percent FROM timestamps WHERE video_id = $1 AND email = $2", item.id, user.as(User).email, as: Int32) %>
+            <% if percent %>
+              <div class="extra content">
+                <div class="ui red bottom attached progress" data-percent="<%= percent %>">
+                  <div class="bar" style="transition-duration: 300ms; width: <%= percent %>%;"></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="ui vertical segment">
+    <h2 class="ui header" style="line-height:24px;color:#e5e5e5;"><%= t(locale, "Popular TV") %>
+      <span><a href="#" style="color:#79b8f3;transition:color .2s ease-in-out;font-size:.9vw;font-weight:700;"><%= t(locale, "See more") %></a></span>
+    </h2>
+
+    <div class="ui container six column grid">
+      <% trending_items = PG_DB.query_all("SELECT genres,title,id,release_date,number_of_seasons,backdrops,posters,popularity,average_rating FROM tv WHERE popularity::numeric > 0 ORDER BY popularity::numeric DESC LIMIT 12", as: SearchSeries) %>
+      <% trending_items.each do |item| %>
+        <div class="column">
+          <div class="hover_container">
+          <div class="ui items popular_page_items" style="background:linear-gradient(rgba(15, 23, 30,.6), rgba(15, 23, 30,.9)),url(<%= "#{HOST_URL}/images#{item.backdrops.try &.to_a.sample}" %>) !important;background-position:center !important;background-size:cover!important;box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+            <div class="item">
+              <a class="ui tiny image">
+                <% if item.release_date[0.. 3] == Time.utc.year.to_s %>
+                  <div style="z-index:1!important;margin-top: -1.7em;margin-left: 0.55em;opacity: 97.5%;font-size:12px;font-weight:normal;" class="ui teal mini ribbon label"><%= Time.utc.year.to_s %></div>
+                <% end %>
+                <img src="<%= "#{HOST_URL}/images#{item.posters.try &.to_a.sample}" %>" style="mix-blend-mode: screen; height: 10em; width:10em;box-sizing: border-box; object-fit: cover; margin-top:-0.2em;margin-bottom:0.2em;"> 
+              </a>
+              <div class="content" style="margin-left:-1em;background-blend-mode: normal; opacity: 1;">
+                <div class="header">
+                  <a href="/tv/<%= item.id %>?season_select=1" style="opacity: 1; font-weight: 700; display: inline-block; color:#fff;white-space:nowrap;max-width:175px;text-overflow:ellipsis;overflow:hidden;"><%= item.title %></a>
+                </div>
+                <div class="meta">
+                  <% item.genres[0 .. 1].each do |genre| %>
+                    <div class="ui tiny teal horizontal label"
+                         style="font-size: .9em;
+                                     font-weight: 700;
+                                     opacity: 90%;">
+                      <%= t(locale, genre) %>
+                    </div>
+                  <% end %>
+                </div>
+                <% if item.responds_to?(:popularity) %>          <div class="description">
+                  <div class="ui mini green statistic">
+                    <div class="value" style="font-weight:400;">
+                      <i class="trophy icon" style="color:#ffa724"></i>
+                      <%= item.popularity.try &.to_s.to_f || 0 %>
+                    </div>
+                    <div class="label" style="color:#e5e5e5;font-weight:700;"><%= t(locale, "Popularity") %></div>
+                  </div>
+                </div>
+              </div>
+            </div><% end %>
+          </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+
+  <% render_continue_to_watch = true %>
+  <% 3.times do %>
+    <% content_types.to_a.shuffle[0 .. 6].each_with_index do |content_type, index| %>
+      <% if index == 0 %>
+        <% if render_continue_to_watch %>
+          <div class="ui vertical segment"><h2 class="ui header" style="line-height:24px;color:#e5e5e5;"><%= t(locale, "Continue where you left off") %></h2>
+            <div class="ui container six column grid">
+
+              <% continuations.each do |item| %>
+        <div class="column">
+          <div class="hover_container">
+            <div class="item" style="background: linear-gradient(rgba(4, 10, 18, 0.2) 10%, rgb(1, 10, 19, .9) 80%), url(<%= "#{HOST_URL}/images#{item.backdrops.try &.[0]}" %>);background-size: contain;box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;opacity: 95%; border-radius: 3px;">
+            <div class="ui image">
+              <img src="<%= "#{HOST_URL}/images#{item.backdrops.try &.[0]}" %>" style="background-blend-mode: darken; opacity: 0%;">
+              <% if item.responds_to? :runtime %>
+                <p style="text-rendering: optimizelegibility; position: absolute; font-size:16px; color: #fff; line-height: 24px;border-radius: 0px;
+                                  position: absolute;
+                                  top: 5%;
+                                  right: 2.5%;background-color: rgba(0,0,0,.5);
+                                  padding: 0.3em;font-weight:bold;border-radius:3px;"><%= recode_length_seconds(item.runtime * 60) %></p>
+              <% end %>
+              <h3 class="ui inverted header" style="position: absolute; bottom: 12%; left: 3%;  display: -webkit-box; max-width: 350px; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;"><a style="text-rendering: optimizelegibility;" href="/watch?trackId=<%= item.id %>"><%= item.title %></a></h3><div class="ui horizontal list" style="position: absolute;bottom: 2.5%;left: 3%;">
+
+                  <a href="#" style="text-rendering: optimizelegibility;color:#e5e5e5;font-size:1.2rem;font-weight: 500;">
+                    <%= item.genres[0 .. 1].join(", ") %>
+                  </a>
+                <a href="#" style="text-rendering: optimizelegibility;color:#d2d2d2;font-size:1.2rem;font-weight: 500;">• <%= item.release_date.try &.[0 ..3] %></a>
+              </div>
+              <div class="ui small orange statistic" style="position: absolute; top: -2.5%; left: 2.5%; text-rendering: optimizelegibility;">
+                <div class="value" style="font-weight: 700; text-rendering: optimizelegibility;">
+                  <%= item.average_rating %>
+                </div>
+                <div class="label" style="font-weight:700; color:#fff; text-rendering: optimizelegibility;font-size:16px; line-height: 24px;">
+                  <%= t(locale, "User Rating") %>
+                </div>
+              </div>
+            </div>
+        <% percent = PG_DB.query_one?("SELECT percent FROM timestamps WHERE video_id = $1 AND email = $2", item.id, user.as(User).email, as: Int32) %>
+        <% if percent && item.responds_to? (:runtime) %>
+          <div class="extra content">
+            <div class="ui red bottom attached progress" data-percent="<%= percent %>">
+              <div class="bar" style="transition-duration: 300ms; width: <%= percent %>%;"></div>
+            </div>
+          </div>
+        <% end %>
+
+          </div>
+          </div>
+        </div>
+
+              <% end %>
+            </div></div>
+            <br>
+            <% last_iteration = "Continue where you left off" %>
+          <% end %>
+          <% render_continue_to_watch = false %>
+          <% next %>
+        <% elsif Random.rand(0 .. 4) == 4 %>
+          <% if last_iteration == "Featured" %>
+            <% next %>
+          <% end %>
+          <div class="ui vertical segment">
+            <h2 class="ui header" style="line-height:24px;color:#e5e5e5;"><%= t(locale, "Featured movies") %>
+              <span><a href="#" style="color:#79b8f3;transition:color .2s ease-in-out;font-size:.9vw;font-weight:700;"><%= t(locale, "See more") %></a></span>
+            </h2>
+            <div class="ui container six column grid">
+              <% trending_items = PG_DB.query_all("SELECT * FROM movies WHERE average_rating::numeric > 6 ORDER BY random() DESC LIMIT 6", as: Video) %>
+              <% trending_items.each do |item| %>
+        <div class="column">
+          <div class="hover_container">
+            <div class="item" style="background: linear-gradient(rgba(4, 10, 18, 0.2) 10%, rgb(1, 10, 19, .9) 80%), url(<%= "#{HOST_URL}/images#{item.posters.try &.[0]}" %>);background-size: contain;box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;opacity: 95%; border-radius: 5px; background-blend-mode: luminosity; ">
+            <div class="ui image">
+              <img src="<%= "#{HOST_URL}/images#{item.posters.try &.[0]}" %>" style="opacity: 0%;">
+              <% if item.responds_to? :runtime %>
+                <p style="text-rendering: optimizelegibility; position: absolute; font-size:18px; color: #fff; line-height: 24px;border-radius: 0px;
+                                  position: absolute;
+                                  top: 2.5%;
+                                  right: 2.5%;background-color: rgba(0,0,0,.5);
+                                  padding: 0.3em;font-weight:bold;border-radius:3px;"><%= recode_length_seconds(item.runtime * 60) %></p>
+              <% end %>
+              <h1 class="ui inverted header" style="position: absolute; bottom: 8%; left: 3%;  display: -webkit-box; max-width: 350px; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;"><a style="color: #fff; text-rendering: optimizelegibility;" href="/watch?trackId=<%= item.id %>"><%= item.title %></a></h1><div class="ui horizontal list" style="position: absolute;bottom: 3%;left: 3%;">
+
+                  <a href="#" style="text-rendering: optimizelegibility;color:#e5e5e5;font-size:16px;font-weight: 500;">
+                    <%= item.genres[0 .. 1].join(", ") %>
+                  </a>
+                <a href="#" style="text-rendering: optimizelegibility;color:#d2d2d2;font-size:16px;font-weight: 500;">• <%= item.release_date.try &.[0 ..3] %></a>
+              </div>
+              <div class="ui orange statistic" style="position: absolute; top: -2.5%; left: 2.5%; text-rendering: optimizelegibility;">
+                <div class="value" style="font-weight: 700; text-rendering: optimizelegibility;">
+                  <%= item.average_rating %>
+                </div>
+                <div class="label" style="font-weight:700; color:#fff; text-rendering: optimizelegibility;font-size:16px; line-height: 24px;">
+                  <%= t(locale, "User Rating") %>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+        <% last_iteration = "Featured" %>
+      <%end %>
+          <% next %>
+
+        <% elsif Random.rand(0 .. 4) == 2 %>
+          <% if !last_iteration.includes?("Because you watched ") && !last_iteration.includes?("Continue where you left off") %>
+            <br>
+          <% end %>
+
+          <% watched = movies.sample %>
+          <div class="ui vertical segment"><h2 class="ui header" style="line-height:24px;color:#e5e5e5;">Because you watched <a href="/watch?trackId=<%= watched.id %>" style="color:#79b8f3"><%= watched.title %></a></h2>
+            <% items = PG_DB.query_all("SELECT genres,title,id,release_date,runtime,backdrops,posters,popularity,average_rating FROM movies WHERE (array_to_string(genres, ', ') LIKE '%#{watched.genres.sample}%' AND id <> #{watched.id}) OR (array_to_string(genres, ', ') LIKE '%#{watched.genres.sample}' AND id <> #{watched.id}) ORDER BY random() LIMIT 6", as: SearchVideo) %>
+            <div class="ui container six column grid">
+              <% items.each do |item| %>
+                <%= rendered "components/item" %>
+              <% end %>
+              <% last_iteration = "Because you watched #{watched.title}" %>
+            </div></div>
+            <% next %>
+          <% else %>
+            <% if last_iteration.includes?(content_type.split[0]) %>
+              <% next %>
+            <% end %>
+            <% if last_iteration.includes?("Because you watched ") %>
+              <br>
+            <% end %>
+            <div class="ui vertical segment"><h2 class="ui header" style="line-height:24px;color:#e5e5e5;"><%= content_type %>
+                <span><a href="/browse/<%= URI.encode_www_form(content_type.downcase) %>" style="color:#79b8f3;transition:color .2s ease-in-out;font-size:.9vw;font-weight:700;"><%= t(locale, "See more") %></a></span>
+              </h2>
+            <% end %>
+            <% if content_type.includes? "TV" %>
+              <% items = PG_DB.query_all("SELECT genres,title,id,release_date,number_of_seasons,backdrops,posters,popularity,average_rating FROM tv ORDER BY random() LIMIT 12", as: SearchSeries) %>
+            <% else %>
+              <% items = PG_DB.query_all("SELECT genres,title,id,release_date,runtime,backdrops,posters,popularity,average_rating FROM movies WHERE array_to_string(genres, ', ') LIKE '%#{content_type.gsub(/(movies|TV|and|Military)/, "").split().shuffle[0].capitalize}%' ORDER BY random() LIMIT 12", as: SearchVideo) %>
+            <% end %>
+            <div class="ui container six column grid">
+              <% items.each do |item| %>
+                <%= rendered "components/item" %>
+              <% end %>
+              <% last_iteration = content_type %>
+            </div></div>
+          <% end %>
+        <% end %>
+</div>
